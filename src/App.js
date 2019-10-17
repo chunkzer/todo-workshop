@@ -1,109 +1,59 @@
-import React from 'react';
-import styled from 'styled-components';
-import closeIcon from './close.svg';
+import React, { useState } from 'react';
+import AppStyled from './AppStyled';
+import TodoInput from './TodoInput/TodoInput';
+
+// todo!
+// todoText: String
+
+const mockTodos = [
+  { todoText: 'Termina la documentacion del workshop'},
+  { todoText: 'Llamale a tu mama'},
+  { todoText: 'Haz todas tus vueltas burocraticas' },
+  { todoText: 'Agenda una limpieza dental' },
+];
+
+const {
+  AppTitle,
+  Container,
+  Header,
+  TodoText,
+  TodoListContainer,
+  Todo,
+  DeleteIcon
+} = AppStyled;
 
 function App() {
+  const [todos, setTodos] = useState(mockTodos);
+
+  const addTodoFn = (todoText) => {
+    setTodos([...todos, { todoText }]);
+  };
+
+  const deleteTodoFn = (index) => {
+    const newTodos =
+      [...todos.slice(0, index), ...todos.slice(index + 1, todos.length)];
+    setTodos(newTodos);
+  };
+
   return (
     <Container>
       <Header>
         <AppTitle > TODO LISTER 9000</AppTitle>
-        <TodoInputContainer>
-          <TodoInput />
-          <AddTodoButton >New</AddTodoButton>
-        </TodoInputContainer>
+        <TodoInput addTodoFn={addTodoFn} />
         <TodoListContainer >
-          <Todo>
-            <TodoText>Termina la documentacion del workshop</TodoText>
-            <DeleteIcon />
-          </Todo>
-          <Todo>
-            <TodoText>Llamale a tu mama</TodoText>
-            <DeleteIcon />
-          </Todo>
-          <Todo>
-            <TodoText>Haz todas tus vueltas burocraticas</TodoText>
-            <DeleteIcon />
-          </Todo>
-          <Todo>
-            <TodoText>Agenda una limpieza dental</TodoText>
-            <DeleteIcon />
-          </Todo>
+        { todos.map((todo, index) => {
+            return (
+              <Todo>
+                <TodoText>{todo.todoText}</TodoText>
+                <DeleteIcon onClick={() => deleteTodoFn(index)}/>
+              </Todo>
+            );
+          })
+        }
         </TodoListContainer >
       </Header>
     </Container>
   );
 }
-
-const Container = styled.div`
-  text-align: center;
-`
-
-const Header = styled.header`
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-`
-
-const TodoInput = styled.input`
-  width: 150px;
-`;
-
-const AppTitle = styled.div`
-  margin-top: 150px;
-  font-size: 48px;
-  color: teal;
-`;
-
-const TodoInputContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-top: 50px;
-`;
-
-const AddTodoButton = styled.div`
-  background-color: blue;
-  color: white;
-  height: 20px;
-  width: 90px;
-  cursor: pointer;
-  font-size: 18px;
-`;
-
-const TodoListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const TodoText = styled.div`
-  margin-left: 4px;
-  color: white;
-  font-size: 18px;
-`;
-
-const Todo = styled.div`
-  margin-top: 10px;
-  width: 1000px;
-  border: 3px solid white;
-  height: 25px;
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-export const DeleteIcon = styled.img.attrs({ src: closeIcon })`
-  cursor: pointer;
-  width: 30px;
-  height: 13px;
-  margin-right: 4px;
-  &:focus {
-    outline: none;
-  }
-`;
 
 export default App;
